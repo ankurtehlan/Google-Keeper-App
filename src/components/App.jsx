@@ -1,32 +1,43 @@
-import React from "react";
-// import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-// import ".../node_modules/bootstrap/dist/js/bootstrap.bundle";
-import Home from "./Home";
-import Contact from "./Contact";
-import Service from "./Service";
-import About from "./About";
-import Navbar from "./Navbar";
+import React, { useState } from "react";
+import Header from "./Header";
 import Footer from "./Footer";
-
-
-import { Routes, Route, Navigate } from 'react-router-dom';
-
+import Note from "./Note";
+import CreateArea from "./CreateArea";
 
 function App() {
+  const [notes, setNotes] = useState([]);
+
+  function addNote(newNote) {
+    setNotes(prevNotes => {
+      return [...prevNotes, newNote];
+    });
+  }
+
+  function deleteNote(id) {
+    setNotes(prevNotes => {
+      return prevNotes.filter((noteItem, index) => {
+        return index !== id;
+      });
+    });
+  }
+
   return (
-    <>
-      <Navbar />
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/about' element={<About />} />
-        <Route path='/contact' element={<Contact />} />
-        <Route path='service' element={<Service />} />
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+    <div>
+      <Header />
+      <CreateArea onAdd={addNote} />
+      {notes.map((noteItem, index) => {
+        return (
+          <Note
+            key={index}
+            id={index}
+            title={noteItem.title}
+            content={noteItem.content}
+            onDelete={deleteNote}
+          />
+        );
+      })}
       <Footer />
-
-    </>
-
+    </div>
   );
 }
 
